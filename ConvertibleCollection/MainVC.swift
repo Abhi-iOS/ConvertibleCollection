@@ -17,7 +17,9 @@ class MainVC: UIViewController {
     
     //Outlet that shows the current view Type
     @IBOutlet weak var viewType: UILabel!
-    var isInGridView = true
+    
+    //enumeration that stores the current view layout
+    var currentView = ViewFlowLayout.isInGridView
     
     
     
@@ -62,17 +64,21 @@ class MainVC: UIViewController {
     // action to performed when the button is clicked
     @IBAction func buttonClicked(_ sender: UIButton) {
         
-        if isInGridView{
+        
+        if currentView == .isInGridView {
             viewType.text = "List"
+            currentView = .isInListView
+            
+            
+            
         }
         
         else{
             viewType.text = "Grid"
+            currentView = .isInGridView
         }
         buttonToChangeView.isSelected = !buttonToChangeView.isSelected
-        isInGridView = !isInGridView
-        
-//        UICollectionView.transition(with: sampleGallery, duration: 1, options: UIViewAnimationOptions.tra, animations: {self.sampleGallery.reloadData()}, completion: nil)
+       
         
         //reload datasource to toggle between views.
         sampleGallery.reloadData()
@@ -91,7 +97,7 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
     //returns item cell at particular index
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
       
-        if isInGridView{
+        if currentView == .isInGridView{
     
             guard let cell = sampleGallery.dequeueReusableCell(withReuseIdentifier: "GridCellID", for: indexPath) as? GridCell else{fatalError("Error! No Cell found")}
             
@@ -119,7 +125,7 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
     //return size of item cell height of width
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize{
         
-        if isInGridView{
+        if currentView == .isInGridView{
             return CGSize(width: 270, height: 200)
         }
         else{
