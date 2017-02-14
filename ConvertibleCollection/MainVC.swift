@@ -18,13 +18,18 @@ class MainVC: UIViewController {
     //Outlet that shows the current view Type
     @IBOutlet weak var viewType: UILabel!
     
+    //delete button outlet
+    @IBOutlet weak var deleteButton: UIButton!
+    
     //enumeration that stores the current view layout
     var currentView = ViewFlowLayout.isInGridView
     
     let listFlowLayout = ListLayout()
     let gridFlowLayout = GridLayout()
     
-    let data: [[String:String]] = [
+    var selectedArray = [IndexPath]()
+    
+    var data: [[String:String]] = [
     
         ["Name": "Iron man", "Image": "IM"],
         ["Name": "Green Arrow", "Image": "Arrow"],
@@ -37,12 +42,16 @@ class MainVC: UIViewController {
         ["Name": "Tin Man", "Image": "tin"]
     ]
     
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        deleteButton.isHidden = true
+    }
     
 //MARK: viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Do any additional setup after loading the view.
         self.automaticallyAdjustsScrollViewInsets = false
         
         sampleGallery.dataSource = self
@@ -58,9 +67,29 @@ class MainVC: UIViewController {
         
         sampleGallery.collectionViewLayout = gridFlowLayout
         
+        //Handling tap gesture
         
-        // Do any additional setup after loading the view.
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(gesture:)))
+        longPress.minimumPressDuration = 0.4
+        longPress.numberOfTouchesRequired = 1
+        self.sampleGallery.addGestureRecognizer(longPress)
+        
     }
+    
+    
+    @IBAction func deleteButtonAction(_ sender: UIButton) {
+        //perform deletion of selected element
+            for indexPath in selectedArray.sorted(by: >){
+            
+            data.remove(at: indexPath.item)
+        }
+        sampleGallery.reloadData()
+        selectedArray = [IndexPath]()
+        deleteButton.isHidden = true
+        buttonToChangeView.isHidden = false
+    }
+    
+    
     
     // action to performed when the button is clicked
     @IBAction func buttonClicked(_ sender: UIButton) {
@@ -89,6 +118,45 @@ class MainVC: UIViewController {
         //reload datasource to toggle between views.
         
     }
+    
+    //function to handle long press
+    //MARK: longPressAction
+    func longPressAction(gesture: UILongPressGestureRecognizer){
+        
+        buttonToChangeView.isHidden = true
+        deleteButton.isHidden = false
+        
+        gesture.minimumPressDuration = 0.08
+        
+        if gesture.state == .ended{
+            return
+        }
+        let pressPoint = gesture.location(in: self.sampleGallery)
+        if let indexPath = self.sampleGallery.indexPathForItem(at: pressPoint){
+            
+            let cell = self.sampleGallery.cellForItem(at: indexPath)
+            cell?.isSelected = true
+            
+            if selectedArray.contains(indexPath){
+                
+                selectedArray.remove(at: selectedArray.index(of: indexPath)!)
+                cell?.isSelected = false
+                cell?.backgroundColor = nil
+
+//                if selectedArray.isEmpty == true{
+//                    
+//              }
+            }
+            else{
+                
+                cell?.backgroundColor = UIColor.blue
+                selectedArray.append(indexPath)
+            }
+            
+            print(selectedArray)
+        }
+        
+    }
 }
 
 //MARK: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate
@@ -109,6 +177,7 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
             //update data in cell
             cell.sampleImage.image = UIImage(named: data[indexPath.item]["Image"]!)
             cell.sampleLabelText.text = data[indexPath.item]["Name"]
+            cell.backgroundColor = nil
             cell.layoutIfNeeded()
 
             return cell

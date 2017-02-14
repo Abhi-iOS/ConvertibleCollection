@@ -11,7 +11,7 @@ import UIKit
 
 class GridLayout: UICollectionViewFlowLayout{
     // define the height of each item cell
-    let itemHeight: CGFloat = 200
+    let itemHeight: CGFloat = 100
     
     override init() {
         super.init()
@@ -33,7 +33,7 @@ class GridLayout: UICollectionViewFlowLayout{
     
     /// here we define the width of each cell, creating a 2 column layout. In case you would create 3 columns, change the number 2 to 3
     func itemWidth() -> CGFloat {
-        return 270
+        return 80
     }
     
     override var itemSize: CGSize {
