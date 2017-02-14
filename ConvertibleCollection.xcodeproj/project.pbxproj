@@ -17,6 +17,8 @@
 		0C5423B71E517D32001A3D5E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C5423B51E517D32001A3D5E /* LaunchScreen.storyboard */; };
 		0C5423BF1E517DFF001A3D5E /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5423BE1E517DFF001A3D5E /* MainVC.swift */; };
 		0CF6663C1E52D5440012709B /* ViewCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF6663B1E52D5440012709B /* ViewCase.swift */; };
+		0CFB4E3B1E52F7480009825B /* GridLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFB4E3A1E52F7480009825B /* GridLayout.swift */; };
+		0CFB4E3D1E52F7570009825B /* ListLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFB4E3C1E52F7570009825B /* ListLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		0C5423B81E517D32001A3D5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0C5423BE1E517DFF001A3D5E /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		0CF6663B1E52D5440012709B /* ViewCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewCase.swift; sourceTree = "<group>"; };
+		0CFB4E3A1E52F7480009825B /* GridLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridLayout.swift; sourceTree = "<group>"; };
+		0CFB4E3C1E52F7570009825B /* ListLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +69,8 @@
 			isa = PBXGroup;
 			children = (
 				0C5423AC1E517D32001A3D5E /* AppDelegate.swift */,
+				0CFB4E3A1E52F7480009825B /* GridLayout.swift */,
+				0CFB4E3C1E52F7570009825B /* ListLayout.swift */,
 				0CF6663B1E52D5440012709B /* ViewCase.swift */,
 				0C5423BE1E517DFF001A3D5E /* MainVC.swift */,
 				0C0693231E5183FD0018EDF6 /* ListCell.swift */,
@@ -154,8 +160,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C0693251E5183FD0018EDF6 /* ListCell.swift in Sources */,
+				0CFB4E3D1E52F7570009825B /* ListLayout.swift in Sources */,
 				0C5423AD1E517D32001A3D5E /* AppDelegate.swift in Sources */,
 				0C5423BF1E517DFF001A3D5E /* MainVC.swift in Sources */,
+				0CFB4E3B1E52F7480009825B /* GridLayout.swift in Sources */,
 				0CF6663C1E52D5440012709B /* ViewCase.swift in Sources */,
 				0C0693291E5184250018EDF6 /* GridCell.swift in Sources */,
 			);

@@ -21,7 +21,8 @@ class MainVC: UIViewController {
     //enumeration that stores the current view layout
     var currentView = ViewFlowLayout.isInGridView
     
-    
+    let listFlowLayout = ListLayout()
+    let gridFlowLayout = GridLayout()
     
     let data: [[String:String]] = [
     
@@ -55,7 +56,7 @@ class MainVC: UIViewController {
         let nibGrid = UINib(nibName: "GridCell", bundle: nil)
         sampleGallery.register(nibGrid, forCellWithReuseIdentifier: "GridCellID")
         
-        
+        sampleGallery.collectionViewLayout = gridFlowLayout
         
         
         // Do any additional setup after loading the view.
@@ -64,25 +65,29 @@ class MainVC: UIViewController {
     // action to performed when the button is clicked
     @IBAction func buttonClicked(_ sender: UIButton) {
         
-        
+        sampleGallery.reloadData()
+
         if currentView == .isInGridView {
             viewType.text = "List"
             currentView = .isInListView
-            
-            
-            
+
+            UIView.animate(withDuration: 0.2) { () -> Void in
+                self.sampleGallery.collectionViewLayout.invalidateLayout()
+                self.sampleGallery.setCollectionViewLayout(self.listFlowLayout, animated: true)}
         }
-        
         else{
             viewType.text = "Grid"
             currentView = .isInGridView
+
+            UIView.animate(withDuration: 0.2) { () -> Void in
+                self.sampleGallery.collectionViewLayout.invalidateLayout()
+                self.sampleGallery.setCollectionViewLayout(self.gridFlowLayout, animated: true)}
         }
         buttonToChangeView.isSelected = !buttonToChangeView.isSelected
        
         
         //reload datasource to toggle between views.
-        sampleGallery.reloadData()
-
+        
     }
 }
 
@@ -109,6 +114,7 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
             return cell
             
         }
+            
         else{
 
             guard let cell = sampleGallery.dequeueReusableCell(withReuseIdentifier: "ListCellID", for: indexPath) as? ListCell else{fatalError("Error! No Cell found")}
@@ -119,17 +125,6 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
             cell.layoutIfNeeded()
             
             return cell
-        }
-    }
-    
-    //return size of item cell height of width
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize{
-        
-        if currentView == .isInGridView{
-            return CGSize(width: 270, height: 200)
-        }
-        else{
-            return CGSize(width: sampleGallery.frame.width, height: 65)
         }
     }
     
