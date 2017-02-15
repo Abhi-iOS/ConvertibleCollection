@@ -13,6 +13,8 @@ class ListLayout: UICollectionViewFlowLayout{
     // define the height of each item cell
     let itemHeight: CGFloat = 65
     
+    
+    
     override init() {
         super.init()
         setupLayout()
