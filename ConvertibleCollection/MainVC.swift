@@ -27,6 +27,7 @@ class MainVC: UIViewController {
     let listFlowLayout = ListLayout()
     let gridFlowLayout = GridLayout()
     
+    //stores indexpath of items to be deleted
     var selectedArray = [IndexPath]()
     
     var data: [[String:String]] = [
@@ -45,6 +46,7 @@ class MainVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         deleteButton.isHidden = true
+        sampleGallery.allowsSelection = false
     }
     
 //MARK: viewDidLoad
@@ -65,28 +67,30 @@ class MainVC: UIViewController {
         let nibGrid = UINib(nibName: "GridCell", bundle: nil)
         sampleGallery.register(nibGrid, forCellWithReuseIdentifier: "GridCellID")
         
+        // initial view set to grid
         sampleGallery.collectionViewLayout = gridFlowLayout
         
         //Handling tap gesture
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(gesture:)))
         longPress.minimumPressDuration = 0.4
-        longPress.numberOfTouchesRequired = 1
+        //        longPress.numberOfTouchesRequired = 1
         self.sampleGallery.addGestureRecognizer(longPress)
         
     }
     
-    
+    //perform deletion of selected element
     @IBAction func deleteButtonAction(_ sender: UIButton) {
-        //perform deletion of selected element
             for indexPath in selectedArray.sorted(by: >){
-            
             data.remove(at: indexPath.item)
+            sampleGallery.deleteItems(at: [indexPath])
         }
-        sampleGallery.reloadData()
+        
+        
         selectedArray = [IndexPath]()
         deleteButton.isHidden = true
         buttonToChangeView.isHidden = false
+        sampleGallery.allowsSelection = false
     }
     
     
@@ -126,34 +130,18 @@ class MainVC: UIViewController {
         buttonToChangeView.isHidden = true
         deleteButton.isHidden = false
         
-        gesture.minimumPressDuration = 0.08
         
         if gesture.state == .ended{
             return
         }
+        sampleGallery.allowsMultipleSelection = true
+        
+        //indetifying index path of item cell at the press point on screen
         let pressPoint = gesture.location(in: self.sampleGallery)
         if let indexPath = self.sampleGallery.indexPathForItem(at: pressPoint){
             
-            let cell = self.sampleGallery.cellForItem(at: indexPath)
-            cell?.isSelected = true
-            
-            if selectedArray.contains(indexPath){
-                
-                selectedArray.remove(at: selectedArray.index(of: indexPath)!)
-                cell?.isSelected = false
-                cell?.backgroundColor = nil
-
-//                if selectedArray.isEmpty == true{
-//                    
-//              }
-            }
-            else{
-                
-                cell?.backgroundColor = UIColor.blue
-                selectedArray.append(indexPath)
-            }
-            
-            print(selectedArray)
+            sampleGallery.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition.centeredVertically)
+            collectionView(sampleGallery, didSelectItemAt: indexPath)
         }
         
     }
@@ -178,7 +166,7 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
             cell.sampleImage.image = UIImage(named: data[indexPath.item]["Image"]!)
             cell.sampleLabelText.text = data[indexPath.item]["Name"]
             cell.backgroundColor = nil
-            cell.layoutIfNeeded()
+            
 
             return cell
             
@@ -191,9 +179,39 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
             //update data in cell
             cell.sampleImage.image = UIImage(named: data[indexPath.item]["Image"]!)
             cell.sampleLabelText.text = data[indexPath.item]["Name"]
-            cell.layoutIfNeeded()
+            cell.backgroundColor = nil
+            
             
             return cell
+        }
+    }
+    //customization to perform on item cell when selected
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+       
+        
+        selectedArray.append(indexPath)
+        print(selectedArray)
+
+        let cell = sampleGallery.cellForItem(at: indexPath)
+        cell?.backgroundColor = .blue
+    }
+    
+    //resume initial state of item cell when deselected
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        print(#function)
+        if currentView == .isInGridView{
+            let cell = sampleGallery.cellForItem(at: indexPath) as? GridCell
+            cell?.backgroundColor = nil
+        }
+        else{
+            let cell = sampleGallery.cellForItem(at: indexPath) as? ListCell
+            cell?.backgroundColor = nil
+        }
+        
+        selectedArray.remove(at: selectedArray.index(of: indexPath)!)
+        if selectedArray.isEmpty{
+            deleteButton.isHidden = true
+            buttonToChangeView.isHidden = false
         }
     }
     
