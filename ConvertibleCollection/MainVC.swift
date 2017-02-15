@@ -140,6 +140,11 @@ class MainVC: UIViewController {
         let pressPoint = gesture.location(in: self.sampleGallery)
         if let indexPath = self.sampleGallery.indexPathForItem(at: pressPoint){
             
+            if selectedArray .contains(indexPath){
+                selectedArray.remove(at: selectedArray.index(of: indexPath)!)
+            }
+
+            
             sampleGallery.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition.centeredVertically)
             collectionView(sampleGallery, didSelectItemAt: indexPath)
         }
@@ -188,7 +193,6 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
     //customization to perform on item cell when selected
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
        
-        
         selectedArray.append(indexPath)
         print(selectedArray)
 
