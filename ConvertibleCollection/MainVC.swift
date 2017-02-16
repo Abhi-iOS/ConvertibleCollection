@@ -43,12 +43,6 @@ class MainVC: UIViewController {
         ["Name": "Tin Man", "Image": "tin"]
     ]
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        deleteButton.isHidden = true
-        sampleGallery.allowsSelection = false
-    }
-    
 //MARK: viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,6 +63,9 @@ class MainVC: UIViewController {
         
         // initial view set to grid
         sampleGallery.collectionViewLayout = gridFlowLayout
+        deleteButton.isHidden = true
+        sampleGallery.allowsSelection = false
+
         
         //Handling tap gesture
         
@@ -81,7 +78,8 @@ class MainVC: UIViewController {
     
     //perform deletion of selected element
     @IBAction func deleteButtonAction(_ sender: UIButton) {
-            for indexPath in selectedArray.sorted(by: >){
+        
+        for indexPath in selectedArray.sorted().reversed(){
             data.remove(at: indexPath.item)
             sampleGallery.deleteItems(at: [indexPath])
         }
@@ -130,6 +128,7 @@ class MainVC: UIViewController {
         buttonToChangeView.isHidden = true
         deleteButton.isHidden = false
         
+        gesture.allowableMovement = 4
         
         if gesture.state == .ended{
             return
@@ -142,6 +141,7 @@ class MainVC: UIViewController {
             
             if selectedArray .contains(indexPath){
                 selectedArray.remove(at: selectedArray.index(of: indexPath)!)
+                
             }
 
             
@@ -171,7 +171,10 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
             cell.sampleImage.image = UIImage(named: data[indexPath.item]["Image"]!)
             cell.sampleLabelText.text = data[indexPath.item]["Name"]
             cell.backgroundColor = nil
-            
+            if selectedArray .contains(indexPath){
+                cell.backgroundColor = .blue
+            }
+
 
             return cell
             
@@ -185,32 +188,39 @@ extension MainVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
             cell.sampleImage.image = UIImage(named: data[indexPath.item]["Image"]!)
             cell.sampleLabelText.text = data[indexPath.item]["Name"]
             cell.backgroundColor = nil
-            
+            if selectedArray .contains(indexPath){
+                cell.backgroundColor = .blue
+            }
+
             
             return cell
         }
     }
     //customization to perform on item cell when selected
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-       
+        
+        if (selectedArray.count == 4){
+            sampleGallery.deselectItem(at: indexPath, animated: false)
+            
+            let alert = UIAlertController(title: "Whooops!!", message: "Selection reached max limit", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Back", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+        else {
         selectedArray.append(indexPath)
         print(selectedArray)
 
         let cell = sampleGallery.cellForItem(at: indexPath)
         cell?.backgroundColor = .blue
+        }
     }
     
     //resume initial state of item cell when deselected
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         print(#function)
-        if currentView == .isInGridView{
-            let cell = sampleGallery.cellForItem(at: indexPath) as? GridCell
-            cell?.backgroundColor = nil
-        }
-        else{
-            let cell = sampleGallery.cellForItem(at: indexPath) as? ListCell
-            cell?.backgroundColor = nil
-        }
+        
+        let cell = sampleGallery.cellForItem(at: indexPath)
+        cell?.backgroundColor = nil
         
         selectedArray.remove(at: selectedArray.index(of: indexPath)!)
         if selectedArray.isEmpty{
